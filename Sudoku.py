@@ -106,18 +106,17 @@ def grid_success(grid):
     #Checks each row for unique 9 numbers
     for i in range(9):
         if set(grid[i][:]) != full:
-            print("Bad bc row")
+            #print("Conflict in rows")
             return False
     #Checks each column for unique 9 numbers
     for j in range(9):
         if set([x[j] for x in grid]) != full:
-            print("Bad bc col")
+            #print("Conflict in columns")
             return False
     #Checks each 3x3 box for unique 9 numbers
     if check_boxes(grid) == False:
-        print("Bad bc box")
+        #print("Conflict in boxes")
         return False
-    print("Good shit")
     return True
 
 def check_boxes(grid):
