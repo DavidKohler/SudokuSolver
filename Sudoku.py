@@ -19,7 +19,10 @@ def print_grid(grid):
     for i in range(9):
         for j in range(9):
             colcnt+=1
-            print(grid[i][j], end=' ')
+            if (grid[i][j] == 0):
+                print('x', end=' ')
+            else:
+                print(grid[i][j], end=' ')
             if (colcnt == 3) or (colcnt == 6):
                 print('|', end=' ')
         rowcnt += 1
@@ -88,6 +91,14 @@ def solve_puzzle():
     '''
     print()
     gridToSolve = input_grid()
+    print_grid(gridToSolve)
+    print("Does this puzzle look correct? (y/n)")
+    response = input()
+    while((response.lower() != 'y') and (response.lower() != 'n')):
+        print("Enter 'y' for yes, or 'n' for no")
+        response = input()
+    if (response.lower() == 'n'):
+        solve_puzzle()
     if (solve(gridToSolve) == False):
         print("No solution found")
         sys.exit()
