@@ -59,6 +59,20 @@ badGridCols = [[4,3,5,2,6,9,7,8,1],
 
 #123456789234567891345678912456789123567891234678912345789123456891234567912345678
 
+def user_select():
+    '''
+    Asks user to choose what they want to do
+    '''
+    print("Welcome to my Sudoku program, made by David Kohler")
+    print("To solve an existing Sudoku, please enter 1")
+    print("To get a new Sudoku puzzle, please enter 2")
+    print("To verify a completed Sudoku, please enter 3")
+    option = input()
+    while((option != "1") and (option != "2") and (option != "3")):
+        print("Please enter a valid input")
+        option = input()
+    return int(option)
+
 def input_grid():
     '''
     Inputs Sudoku grid from user in form of single
@@ -71,12 +85,19 @@ def input_grid():
         grid[j] = [int(rawList[i+(j*9)]) for i in range(0,9)]
     return grid
 
-#TODO PRINT RULES
 #TODO SOLVE SUDOKU GRID
-#TODO CREATE NEW SUDOKU
-#TODO VERIFY A COMPLETED SUDOKU
-#TODO GIVE USER OPTION FOR ALL THESE
+def solve_puzzle():
+    print("solve")
 
+#TODO CREATE NEW SUDOKU
+def new_puzzle():
+    print("new")
+
+#TODO VERIFY A COMPLETED SUDOKU
+def verify_puzzle():
+    print("verify")
+
+#TODO PRINT RULES
 def print_rules():
     '''
     Prints rules and instructions of the program
@@ -176,9 +197,18 @@ def check_boxes(grid):
     return False
 
 if __name__ == '__main__':
-    print_rules()
-    grid = input_grid()
-    print_grid(grid)
+    option = user_select()
+    if option == 1:
+        solve_puzzle()
+    elif option == 2:
+        new_puzzle()
+    elif option == 3:
+        verify_puzzle()
+
+
+    #print_rules()
+    #grid = input_grid()
+    #print_grid(grid)
     #print(grid_success(grid))
 
 
