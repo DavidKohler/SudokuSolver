@@ -80,22 +80,95 @@ def input_grid():
     '''
     rawGrid = input()
     rawList = list(rawGrid)
+    #Checks that grid was input in correct format
+    while (check_valid_grid(rawList) == False):
+        print("Incorrect format for grid. Please try again")
+        rawGrid = input()
+        rawList = list(rawGrid)
+    #Initialize 9x9 empty grid
     grid = [[0 for x in range(9)] for y in range(9)]
-    for j in range(0,9):
-        grid[j] = [int(rawList[i+(j*9)]) for i in range(0,9)]
+    #Fill in grid values
+    for j in range(9):
+        grid[j] = [int(rawList[i+(j*9)]) for i in range(9)]
     return grid
+
+def check_valid_grid(gridlist):
+    '''
+    Checks that grid was input in correct format
+    '''
+    #Makes sure every item is a digit
+    for item in gridlist:
+        if (item.isdigit() == False):
+            print("Grid contains non-digit item")
+            return False
+    #Makes sure string entered is of correct length
+    if (len(gridlist) != 81):
+        print("Grid of incorrect length")
+        return False
+    return True
 
 #TODO SOLVE SUDOKU GRID
 def solve_puzzle():
-    print("solve")
+    '''
+    Start solving a puzzle passed in by the user.
+    Starts at 0,0 (box 1)
+    '''
+    print()
+    gridToSolve = input_grid()
+    solve(gridToSolve)
+    print_grid(gridToSolve)
+    print("Puzzle completed!")
+
+
+def solve(grid, x = 0, y = 0):
+    '''
+    Process of solving grid, one cell at a timeself.
+    Uses backtracking to find correct cell value
+    '''
+    xn, yn = next_open(grid, x, y)
+    #Check if puzzle is filled
+    if (xn == -1):
+        return True
+    for z in range(1,10):
+        #Checks for valid cell placement
+        if isValidPlace(grid, xn, yn, z):
+            grid[xn][yn] = z
+            if (solve(grid, xn, yn)):
+                return True
+            #Resets cell
+            grid[xn][yn] = 0
+    return False
+
+
+def isValidPlace(grid, x, y, z):
+    '''
+    Checks for valid placement of z at x,y
+    '''
+    if (z in grid[x]):
+        #z is already in this row
+        return False
+    if (z in [grid[i][y] for i in range(9)]):
+        #z is already in this column
+        return False
+    #Find the top right cell coordinates in box
+    topX, topY = (3 * (x//3)), (3 * (y//3))
+    for ix in range(topX, topX+3):
+        for iy in range(topY, topY+3):
+            if (z == grid[ix][iy]):
+                #z already in this box
+                return False
+    return True
 
 #TODO CREATE NEW SUDOKU
 def new_puzzle():
-    print("new")
+    print("new under construction")
 
-#TODO VERIFY A COMPLETED SUDOKU
 def verify_puzzle():
-    print()
+    '''
+    Verifies existing puzzle based on input grid
+    from the user. Will return a success or what
+    kind of conflict was found
+    '''
     print("Please enter the puzzle you wish to verify")
     print("Enter in format 123456789123456789123... etc")
     gridToCheck = input_grid()
@@ -177,16 +250,13 @@ def grid_success(grid):
     #Checks each row for unique 9 numbers
     for i in range(9):
         if set(grid[i][:]) != full:
-            #print("Conflict in rows")
             return 1
     #Checks each column for unique 9 numbers
     for j in range(9):
         if set([x[j] for x in grid]) != full:
-            #print("Conflict in columns")
             return 2
     #Checks each 3x3 box for unique 9 numbers
     if check_boxes(grid) == False:
-        #print("Conflict in boxes")
         return 3
     return 0
 
@@ -219,6 +289,7 @@ def check_boxes(grid):
 
 if __name__ == '__main__':
     option = user_select()
+    print()
     if option == 1:
         solve_puzzle()
     elif option == 2:
