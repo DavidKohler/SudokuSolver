@@ -6,58 +6,28 @@ Sudoku Solver
 '''
 
 import random
+import sys
 
-full = set([1, 2, 3, 4, 5, 6, 7, 8, 9])
+#Example 17 starting clue puzzle (Smallest number of starting clues possible)
+#000801000000000430500000000000070800000000100020030000600000075003400000000200600
 
-'''
-Set of example grids to test validity
-of grid checker
-'''
-#Good example grid
-goodGridEx = [[4,3,5,2,6,9,7,8,1],
-        [6,8,2,5,7,1,4,9,3],
-        [1,9,7,8,3,4,5,6,2],
-        [8,2,6,1,9,5,3,4,7],
-        [3,7,4,6,8,2,9,1,5],
-        [9,5,1,7,4,3,6,2,8],
-        [5,1,9,3,2,6,8,7,4],
-        [2,4,8,9,5,7,1,3,6],
-        [7,6,3,4,1,8,2,5,9]]
-
-#Bad bc boxes
-badGridBoxes = [[4,3,5,2,6,9,7,8,1],
-        [6,8,2,5,7,1,4,9,3],
-        [1,9,7,8,3,4,5,6,2],
-        [8,2,6,1,9,5,3,4,7],
-        [3,7,4,6,8,2,9,1,5],
-        [5,1,9,3,2,6,8,7,4],
-        [9,5,1,7,4,3,6,2,8],
-        [2,4,8,9,5,7,1,3,6],
-        [7,6,3,4,1,8,2,5,9]]
-
-#Bad bc rows
-badGridRows = [[1,1,1,1,1,1,1,1,1],
-        [2,2,2,2,2,2,2,2,2],
-        [3,3,3,3,3,3,3,3,3],
-        [4,4,4,4,4,4,4,4,4],
-        [5,5,5,5,5,5,5,5,5],
-        [6,6,6,6,6,6,6,6,6],
-        [7,7,7,7,7,7,7,7,7],
-        [8,8,8,8,8,8,8,8,8],
-        [9,9,9,9,9,9,9,9,9]]
-
-#Bad bc columns
-badGridCols = [[4,3,5,2,6,9,7,8,1],
-        [4,3,5,2,6,9,7,8,1],
-        [4,3,5,2,6,9,7,8,1],
-        [4,3,5,2,6,9,7,8,1],
-        [4,3,5,2,6,9,7,8,1],
-        [4,3,5,2,6,9,7,8,1],
-        [4,3,5,2,6,9,7,8,1],
-        [4,3,5,2,6,9,7,8,1],
-        [4,3,5,2,6,9,7,8,1]]
-
-#123456789234567891345678912456789123567891234678912345789123456891234567912345678
+def print_grid(grid):
+    '''
+    Prints the grid in a more readible format
+    '''
+    colcnt, rowcnt = 0, 0
+    for i in range(9):
+        for j in range(9):
+            colcnt+=1
+            print(grid[i][j], end=' ')
+            if (colcnt == 3) or (colcnt == 6):
+                print('|', end=' ')
+        rowcnt += 1
+        print()
+        if (rowcnt == 3) or (rowcnt == 6):
+            print('------+-------+-------')
+        colcnt = 0
+    print()
 
 def user_select():
     '''
@@ -78,6 +48,10 @@ def input_grid():
     Inputs Sudoku grid from user in form of single
     string of numbers
     '''
+    print("Please enter the puzzle you wish to solve")
+    print("Enter in format reading left to right, top to")
+    print("bottom, as one string. Indicate blank cells with 0")
+    print("For example:10345670912005608012... etc")
     rawGrid = input()
     rawList = list(rawGrid)
     #Checks that grid was input in correct format
@@ -107,7 +81,6 @@ def check_valid_grid(gridlist):
         return False
     return True
 
-#TODO SOLVE SUDOKU GRID
 def solve_puzzle():
     '''
     Start solving a puzzle passed in by the user.
@@ -115,7 +88,9 @@ def solve_puzzle():
     '''
     print()
     gridToSolve = input_grid()
-    solve(gridToSolve)
+    if (solve(gridToSolve) == False):
+        print("No solution found")
+        sys.exit()
     print_grid(gridToSolve)
     print("Puzzle completed!")
 
@@ -125,8 +100,9 @@ def solve(grid, x = 0, y = 0):
     Process of solving grid, one cell at a timeself.
     Uses backtracking to find correct cell value
     '''
+    #Move to next 0 cell
     xn, yn = next_open(grid, x, y)
-    #Check if puzzle is filled
+    #Check if puzzle is filled already
     if (xn == -1):
         return True
     for z in range(1,10):
@@ -139,25 +115,23 @@ def solve(grid, x = 0, y = 0):
             grid[xn][yn] = 0
     return False
 
-
-def isValidPlace(grid, x, y, z):
+def next_open(grid, x1, y1):
     '''
-    Checks for valid placement of z at x,y
+    Searches grid for next open spot.
+    If no spot found, returns -1,-1 to indicate grid is full
     '''
-    if (z in grid[x]):
-        #z is already in this row
-        return False
-    if (z in [grid[i][y] for i in range(9)]):
-        #z is already in this column
-        return False
-    #Find the top right cell coordinates in box
-    topX, topY = (3 * (x//3)), (3 * (y//3))
-    for ix in range(topX, topX+3):
-        for iy in range(topY, topY+3):
-            if (z == grid[ix][iy]):
-                #z already in this box
-                return False
-    return True
+    #Systematically search next spots
+    for i in range(x1, 9):
+        for j in range(y1, 9):
+            if grid[i][j] == 0:
+                return i, j
+    #Check from beginning of grid
+    for i in range(0, 9):
+        for j in range(0, 9):
+            if grid[i][j] == 0:
+                return i, j
+    #No next spot found
+    return -1, -1
 
 #TODO CREATE NEW SUDOKU
 def new_puzzle():
@@ -170,7 +144,8 @@ def verify_puzzle():
     kind of conflict was found
     '''
     print("Please enter the puzzle you wish to verify")
-    print("Enter in format 123456789123456789123... etc")
+    print("Enter in format reading left to right, top to")
+    print("bottom, as one string: 12345678912345678912...")
     gridToCheck = input_grid()
     print_grid(gridToCheck)
     print("Is this the correct puzzle? (Enter y/n)")
@@ -192,73 +167,24 @@ def verify_puzzle():
         else:
             print("Puzzle solved correctly! Congratulations!")
 
-#TODO PRINT RULES
-def print_rules():
+def isValidPlace(grid, x, y, z):
     '''
-    Prints rules and instructions of the program
+    Checks for valid placement of z at x, y
     '''
-    print("Rules:")
-
-def next_open(grid, x1, y1):
-    '''
-    Searches grid for next open spot.
-    If no spot found, returns -1,-1 to indicate grid is full
-    '''
-    #Systematically search next spots
-    for i in range(x1, 9):
-        for j in range(y1, 9):
-            if grid[i][j] == 0:
-                return i, j
-    #Check from beginning of grid
-    for i in range(0, 9):
-        for j in range(0, 9):
-            if grid[i][j] == 0:
-                return i, j
-    #No next spot found
-    return -1, -1
-
-    '''
-def init_grid():
-    w, h = 9, 9;
-    #grid = [[0 for x in range(w)] for y in range(h)]
-    grid = [[random.randint(1,9) for x in range(w)] for y in range(h)]
-    return grid
-    '''
-
-def print_grid(grid):
-    '''
-    Prints the grid in a more readible format
-    '''
-    colcnt, rowcnt = 0, 0
-    for i in range(9):
-        for j in range(9):
-            colcnt+=1
-            print(grid[i][j], end=' ')
-            if (colcnt == 3) or (colcnt == 6):
-                print('|', end=' ')
-        rowcnt += 1
-        print()
-        if (rowcnt == 3) or (rowcnt == 6):
-            print('------+-------+-------')
-        colcnt = 0
-    print()
-
-def grid_success(grid):
-    '''
-    Checks if grid is complete
-    '''
-    #Checks each row for unique 9 numbers
-    for i in range(9):
-        if set(grid[i][:]) != full:
-            return 1
-    #Checks each column for unique 9 numbers
-    for j in range(9):
-        if set([x[j] for x in grid]) != full:
-            return 2
-    #Checks each 3x3 box for unique 9 numbers
-    if check_boxes(grid) == False:
-        return 3
-    return 0
+    if (z in grid[x]):
+        #z is already in this row
+        return False
+    if (z in [grid[i][y] for i in range(9)]):
+        #z is already in this column
+        return False
+    #Find the top right cell coordinates in box
+    x0, y0 = (3 * (x//3)), (3 * (y//3))
+    for ix in range(x0, x0+3):
+        for iy in range(y0, y0+3):
+            if (z == grid[ix][iy]):
+                #z already in this box
+                return False
+    return True
 
 def check_boxes(grid):
     '''
@@ -267,6 +193,7 @@ def check_boxes(grid):
     amount of boxes to check to verify a complete
     Sudoku grid
     '''
+    full = set([1, 2, 3, 4, 5, 6, 7, 8, 9])
     box1 = [grid[0][0], grid[0][1], grid[0][2],
             grid[1][0], grid[1][1], grid[1][2],
             grid[2][0], grid[2][1], grid[2][2]]
@@ -287,6 +214,24 @@ def check_boxes(grid):
         return True
     return False
 
+def grid_success(grid):
+    '''
+    Checks if grid is complete
+    '''
+    full = set([1, 2, 3, 4, 5, 6, 7, 8, 9])
+    #Checks each row for unique 9 numbers
+    for i in range(9):
+        if set(grid[i][:]) != full:
+            return 1
+    #Checks each column for unique 9 numbers
+    for j in range(9):
+        if set([x[j] for x in grid]) != full:
+            return 2
+    #Checks each 3x3 box for unique 9 numbers
+    if check_boxes(grid) == False:
+        return 3
+    return 0
+
 if __name__ == '__main__':
     option = user_select()
     print()
@@ -296,36 +241,3 @@ if __name__ == '__main__':
         new_puzzle()
     elif option == 3:
         verify_puzzle()
-
-
-    #print_rules()
-    #grid = input_grid()
-    #print_grid(grid)
-    #print(grid_success(grid))
-
-
-
-
-
-
-
-    #print_grid(grid)
-
-    #x = 1
-    #cnt = 0
-    #while x == 1:
-    #    grid = init_grid()
-        #print_grid(grid)
-    #    cnt += 1
-    #    print(cnt)
-    #    if grid_success(grid):
-    #        print_grid(grid)
-    #        x = 2
-        #for i in range(9):
-        #    if (set(grid[i][:]) == full):
-        #        print(grid[i][:]
-        #        print_grid(grid)
-        #        x=2
-
-    #for i in range(9):
-    #    print(set(grid[i][:]) == full)
