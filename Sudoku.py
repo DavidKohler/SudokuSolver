@@ -55,6 +55,12 @@ badGridCols = [[4,3,5,2,6,9,7,8,1],
         [4,3,5,2,6,9,7,8,1],
         [4,3,5,2,6,9,7,8,1]]
 
+#TODO INPUT SUDOKU GRID
+#TODO SOLVE SUDOKU GRID
+#TODO CREATE NEW SUDOKU
+#TODO VERIFY A COMPLETED SUDOKU
+#TODO GIVE USER OPTION FOR ALL THESE
+
 def next_open(grid, x1, y1):
     '''
     Searches grid for next open spot.
@@ -103,6 +109,7 @@ def grid_success(grid):
     '''
     Checks if grid is complete
     '''
+    ##TODO RETURN INTS TO INDICATE WHAT KIND OF FAILURE
     #Checks each row for unique 9 numbers
     for i in range(9):
         if set(grid[i][:]) != full:
