@@ -95,7 +95,29 @@ def new_puzzle():
 
 #TODO VERIFY A COMPLETED SUDOKU
 def verify_puzzle():
-    print("verify")
+    print()
+    print("Please enter the puzzle you wish to verify")
+    print("Enter in format 123456789123456789123... etc")
+    gridToCheck = input_grid()
+    print_grid(gridToCheck)
+    print("Is this the correct puzzle? (Enter y/n)")
+    response = input()
+    while((response.lower() != 'y') and (response.lower() != 'n')):
+        print("Enter 'y' for yes, or 'n' for no")
+        response = input()
+    if (response.lower() == 'n'):
+        verify_puzzle()
+    else:
+        print("Verifying puzzle...")
+        result = grid_success(gridToCheck)
+        if (result == 1):
+            print("Puzzle incorrect. Conflict in row(s)")
+        elif (result == 2):
+            print("Puzzle incorrect. Conflict in column(s)")
+        elif (result == 3):
+            print("Puzzle incorrect. Conflict in box(s)")
+        else:
+            print("Puzzle solved correctly! Congratulations!")
 
 #TODO PRINT RULES
 def print_rules():
@@ -152,22 +174,21 @@ def grid_success(grid):
     '''
     Checks if grid is complete
     '''
-    ##TODO RETURN INTS TO INDICATE WHAT KIND OF FAILURE
     #Checks each row for unique 9 numbers
     for i in range(9):
         if set(grid[i][:]) != full:
             #print("Conflict in rows")
-            return False
+            return 1
     #Checks each column for unique 9 numbers
     for j in range(9):
         if set([x[j] for x in grid]) != full:
             #print("Conflict in columns")
-            return False
+            return 2
     #Checks each 3x3 box for unique 9 numbers
     if check_boxes(grid) == False:
         #print("Conflict in boxes")
-        return False
-    return True
+        return 3
+    return 0
 
 def check_boxes(grid):
     '''
