@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+#Sudoku.py
 '''
 Author: David Kohler
 Sudoku Solver
@@ -55,11 +57,31 @@ badGridCols = [[4,3,5,2,6,9,7,8,1],
         [4,3,5,2,6,9,7,8,1],
         [4,3,5,2,6,9,7,8,1]]
 
-#TODO INPUT SUDOKU GRID
+#123456789234567891345678912456789123567891234678912345789123456891234567912345678
+
+def input_grid():
+    '''
+    Inputs Sudoku grid from user in form of single
+    string of numbers
+    '''
+    rawGrid = input()
+    rawList = list(rawGrid)
+    grid = [[0 for x in range(9)] for y in range(9)]
+    for j in range(0,9):
+        grid[j] = [int(rawList[i+(j*9)]) for i in range(0,9)]
+    return grid
+
+#TODO PRINT RULES
 #TODO SOLVE SUDOKU GRID
 #TODO CREATE NEW SUDOKU
 #TODO VERIFY A COMPLETED SUDOKU
 #TODO GIVE USER OPTION FOR ALL THESE
+
+def print_rules():
+    '''
+    Prints rules and instructions of the program
+    '''
+    print("Rules:")
 
 def next_open(grid, x1, y1):
     '''
@@ -101,7 +123,7 @@ def print_grid(grid):
         rowcnt += 1
         print()
         if (rowcnt == 3) or (rowcnt == 6):
-            print('----------------------')
+            print('------+-------+-------')
         colcnt = 0
     print()
 
@@ -154,9 +176,10 @@ def check_boxes(grid):
     return False
 
 if __name__ == '__main__':
-    grid = badGridBoxes
+    print_rules()
+    grid = input_grid()
     print_grid(grid)
-    print(grid_success(grid))
+    #print(grid_success(grid))
 
 
 
