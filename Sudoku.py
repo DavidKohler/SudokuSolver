@@ -200,14 +200,14 @@ def make_puzzle(diff):
         #42 blank spots, 39 starting hints
         grid = blankify(solvedGrid, 42)
     elif diff == "3":
-        #50 blank spots, 31 starting hints
-        grid = blankify(solvedGrid, 50)
+        #48 blank spots, 33 starting hints
+        grid = blankify(solvedGrid, 48)
     elif diff == "4":
-        #55 blank spots, 26 starting hints
-        grid = blankify(solvedGrid, 55)
+        #52 blank spots, 29 starting hints
+        grid = blankify(solvedGrid, 52)
     elif diff == "5":
-        #59 blank spots, 22 starting hints
-        grid = blankify(solvedGrid, 59)
+        #56 blank spots, 25 starting hints
+        grid = blankify(solvedGrid, 56)
     else:
         #64 blank spots, 17 starting hints
         #Lowest number of starting hints mathematically possible
