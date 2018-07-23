@@ -144,9 +144,100 @@ def next_open(grid, x1, y1):
     #No next spot found
     return -1, -1
 
-#TODO CREATE NEW SUDOKU
 def new_puzzle():
-    print("new under construction")
+    '''
+    Creates a new puzzle and returns it with a
+    certain number of starting hints, based on
+    the selected difficulty. Also returns solution
+    '''
+    print()
+    print("Select puzzle difficulty to create")
+    print("Enter 1 for Very Easy")
+    print("Enter 2 for Easy")
+    print("Enter 3 for Medium")
+    print("Enter 4 for Hard")
+    print("Enter 5 for Expert")
+    print("Enter 6 for Insane")
+    difficulty = input()
+    while((difficulty != "1") and (difficulty != "2") and (difficulty != "3")
+                                and (difficulty != "4") and (difficulty != "5")
+                                and (difficulty != "6")):
+        print("Please enter a valid input")
+        option = input()
+    puzzle, solution = make_puzzle(difficulty)
+    while (grid_success(solution) != 0):
+        puzzle, solution = make_puzzle(difficulty)
+    print()
+    print_grid(puzzle)
+    print("Do you want the solution? (y/n)")
+    response = input()
+    while((response.lower() != 'y') and (response.lower() != 'n')):
+        print("Enter 'y' for yes, or 'n' for no")
+        response = input()
+    if (response.lower() == 'n'):
+        sys.exit()
+    else:
+        print()
+        print_grid(solution)
+
+def make_puzzle(diff):
+    '''
+    Creates a new Sudoku puzzle by randomly choosing
+    20 numbers and then solving the puzzle from that
+    '''
+    solvedGrid = [[0 for x in range(9)] for y in range(9)]
+    solvedGrid[0][0] = random.randint(1, 9)
+    x, y = 0, 0
+    for i in range(20):
+        x, y = next_open(solvedGrid, x, y)
+        z = rand_num(solvedGrid, x, y)
+        solvedGrid[x][y] = z
+    solve(solvedGrid)
+    if diff == "1":
+        #35 blank spots, 46 starting hints
+        grid = blankify(solvedGrid, 35)
+    elif diff == "2":
+        #42 blank spots, 39 starting hints
+        grid = blankify(solvedGrid, 42)
+    elif diff == "3":
+        #50 blank spots, 31 starting hints
+        grid = blankify(solvedGrid, 50)
+    elif diff == "4":
+        #55 blank spots, 26 starting hints
+        grid = blankify(solvedGrid, 55)
+    elif diff == "5":
+        #59 blank spots, 22 starting hints
+        grid = blankify(solvedGrid, 59)
+    else:
+        #64 blank spots, 17 starting hints
+        #Lowest number of starting hints mathematically possible
+        grid = blankify(solvedGrid, 64)
+    return grid, solvedGrid
+
+def blankify(origGrid, num):
+    '''
+    Takes a solved grid and adds number num blanks
+    to create an unsolved puzzle grid
+    '''
+    grid = [row[:] for row in origGrid]
+    coordsVisited = set([])
+    for i in range(num):
+        randX, randY = random.randint(0, 8), random.randint(0, 8)
+        while ((randX, randY) in coordsVisited):
+            randX, randY = random.randint(0, 8), random.randint(0, 8)
+        coordsVisited.add((randX, randY))
+        grid[randX][randY] = 0
+    return grid
+
+def rand_num(grid, x, y):
+    '''
+    Chooses a number randomly such that it would be
+    a valid placement at the given coordinates
+    '''
+    num = random.randint(1, 9)
+    while (isValidPlace(grid, x, y, num) == False):
+        num = random.randint(1, 9)
+    return num
 
 def verify_puzzle():
     '''
