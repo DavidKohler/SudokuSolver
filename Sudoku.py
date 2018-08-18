@@ -8,9 +8,6 @@ Sudoku Solver
 import random
 import sys
 
-#Example 17 starting clue puzzle (Smallest number of starting clues possible)
-#000801000000000430500000000000070800000000100020030000600000075003400000000200600
-
 def print_grid(grid):
     '''
     Prints the grid in a more readible format
