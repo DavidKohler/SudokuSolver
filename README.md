@@ -16,6 +16,12 @@ correctly, or else will return the first conflict it finds. Designed for use fro
 
 Outputs and takes input from terminal
 
+## Example
+
+Below is an example of two random 'Medium" Sudokus created and able to be solved by the program
+
+![Medium Sudokus](ExampleSudoku.png)
+
 ## Authors
 
 David Kohler
